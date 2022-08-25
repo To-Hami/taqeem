@@ -1,0 +1,33 @@
+{display="header"}
+
+<form action="user/changepass" class="col-sm-6" id="loginform" method="post">
+    <input type="hidden" name="_method" value="put">
+    <div class="text-center">
+        <h3>{lang('change_password')}</h3>
+    </div>
+
+    <br>
+
+    <div class="form-group caption">
+        <label for="email">{lang('email')}</label>
+        <input type="email" readonly disabled id="email" class="form-control" value="{auth('email')}">
+    </div>
+    <br>
+    <div class="form-group">
+        <label for="oldpassword">{lang('oldpassword')}</label>
+        <input required type="password" name="oldpassword" id="oldpassword" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="password">{lang('password')}</label>
+        <input required type="password" name="password" id="password" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="vpassword">{lang('vpassword')}</label>
+        <input required type="password" name="vpassword" id="vpassword" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">{lang('change_password')}</button>
+
+</form>
+
+{display="footer"}

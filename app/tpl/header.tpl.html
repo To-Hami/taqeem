@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <base href="{SUB_DIR}/">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/feather.css">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/fonts.css?d={time()}">
+  <link rel="stylesheet" href="assets/css/style.css?d={time()}">
+  <script src="assets/js/js.js?d={time()}"></script>
+  <title>{lang('taqeem')}</title>
+</head>
+
+<body>
+  <nav>
+    <div class="dmenu">
+      <div class="text-sm">
+        {lang('welcome')}
+          &nbsp;
+          <b>{auth('name')}</b>
+          &nbsp; <i class="feather-chevron-down"></i>
+      </div>
+      <div class="list">
+        {if auth('status') eq 2}<a href="/user/edit/{auth('id')}"><i class="feather-user"></i>{lang('profile')}</a>{/if}
+        <a href="/user/changepass"><i class="feather-lock"></i>{lang('password')}</a>
+      </div>
+    </div>
+    <!-- *** -->
+    <div class="dmenu">
+      <span><i class="feather-menu"></i>{lang('options')}
+      &nbsp; <i class="feather-chevron-down"></i></span>
+      <div class="list">
+        {if auth('status') eq 2}<a href="/"><i class="feather-plus"></i>{lang('new_report')}</a>{/if}
+        {if auth('status') eq 1}<a href="/"><i class="feather-plus"></i>{lang('new_report')}</a>{/if}
+        {if auth('status') eq 2}
+          <a href="/user/managment"><i class="feather-users"></i>{lang('managment')}</a>
+          <a href="/user/generalmanagers"><i class="feather-users"></i>{lang('general_managers')}</a>
+          <a href="/user/managers"><i class="feather-users"></i>{lang('managers')}</a>
+        {/if}
+        {if auth('status') eq 2}<a href="/hotels"><i class="feather-map-pin"></i>{lang('hotels')}</a>{/if}
+        <a href="/reports"><i class="feather-list"></i>{lang('reports')}</a>
+      </div>
+    </div>
+    <a href="/logout" class="text-danger"><i class="feather-log-out"></i>{lang('logout')}</a>
+  </nav>
+
+  <!-- BODY -->
+  <div id="container" class="container-fluid">
+
+    {if (get_message())}
+    <div class="alert alert-info col-sm-6 m-auto">{get_message()}</div>
+    {/if}
+    {if (is_error())}
+    <ul>
+      {list="get_errors()" name="err"}
+      <li class="alert alert-danger col-sm-6 m-auto">{lang($keyerr)} {$err}</li>
+      {/list}
+    </ul>
+    <br>
+    {/if}

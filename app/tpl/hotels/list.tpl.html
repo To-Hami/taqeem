@@ -1,0 +1,46 @@
+{display="header"}
+
+<div class="d-flex justify-content-between">
+    <h4># {lang('hotel_list')}</h4>
+    <div>
+        <a href="/hotels/add" class="btn btn-primary">
+            <i class="feather-user-plus"></i>
+            {lang('new_hotel')} 
+        </a>
+    </div>
+</div>
+<br>
+<table class="table text-right">
+    <thead>
+        <th class="w-1">#</th>
+        <th>{lang('hotel_name')}</th>
+        <th>{lang('branch')}</th>
+        <th>{lang('address')}</th>
+        <th class="w-1">&nbsp;</th>
+    </thead>
+    <tbody>
+        {list="$hotels" name="hotel"}
+        <tr>
+            <td>{$ihotel}</td>
+            <td>{$hotel.name}</td>
+            <td>{$hotel.branch}</td>
+            <td>{$hotel.address}</td>
+            <td>
+                <div class="options">
+                    <a href="/hotels/edit/{$hotel.id}">
+                        <span class="feather-edit"></span>
+                    </a>
+                    <span><i onclick="javascript:alertdel('/hotels/del/{$hotel.id}', this)" class="feather-trash text-danger"></i></span>
+                </div>
+            </td>
+        </tr>
+        {listelse}
+        <tr>
+            <td colspan="6" class="caption">{lang('noresult')}</td>
+        </tr>
+        {/listelse}
+
+    </tbody>
+</table>
+
+{display="footer"}

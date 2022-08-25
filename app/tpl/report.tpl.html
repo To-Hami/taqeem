@@ -1,0 +1,214 @@
+{display="header"}
+
+<header>
+    <h4>{lang('tqeem')}</h4>
+    <div><img src="/assets/img/logo.png" class="img-fluid" alt="logo"></div>
+</header>
+
+<div class="text-left no-print">
+    <br>
+    <button onclick="javascript:window.print()" type="button" class="btn btn-primary">
+        <i class="feather-printer"></i>
+        {lang('print_report')}
+    </button>
+</div>
+<br>
+
+<!-- BEGIN -->
+<!-- معلومات التقييم -->
+<div class="row">
+    <div class="col-6">
+        <div class="form-group row">
+            <input type="hidden" name="hotel_id" id="hotel_id" value="0">
+            <label class="col-sm-4" for="hotelname">{lang('hotelname')}</label>
+            <div class="col-sm-8">
+                <input type="text" readonly id="hotelname" class="form-control" value="{$report.hotel}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4" for="address">{lang('address')}</label>
+            <div class="col-sm-8">
+                <input type="text" readonly id="address" class="form-control" value="{$report.address}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4" for="branch">{lang('branch')}</label>
+            <div class="col-sm-8">
+                <input type="text" readonly id="branch" class="form-control" value="{$report.branch}">
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group row">
+            <label class="col-sm-4" for="supervisor">{lang('supervisor')}</label>
+            <div class="col-sm-8">
+                <input type="text" id="supervisor" class="form-control" readonly value="{$report.username}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4" for="testdate">{lang('test_date')}</label>
+            <div class="col-sm-8">
+                <input type="text" readonly id="testdate" class="form-control" value="{$report.created_at}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<!-- تابات -->
+<div class="tabs-container">
+    <ul class="tabs no-print" id="tabs">
+        {list="json('tabs')" name="tab"}
+        <li id="{$keytab}" class="{if $itab == 1}active{/if}"><i class="feather-{$tab.icon}"></i>{$tab.title}</li>
+        {/list}
+    </ul>
+    <!-- محتوى التابات -->
+    {list="json('tabs')" name="tab"}
+    <ul class="tabs show-print">
+        <li class="active"><i class="feather-{$tab.icon}"></i>{$tab.title}</li>
+    </ul>
+    <div id="tab_{$itab}" class="tab {if $itab == 1}active{/if}">
+        {list="$report.options" name="cat"}
+        {if $keycat eq 9}
+        {list="$cat" name="cat2"}
+        {if $cat2.tab_id neq $keytab}{continue}{/if}
+        <table class="table">
+            <thead>
+                <th class="w-1">{lang('points')}</th>
+                <th>{lang('room_number')}&nbsp;{$cat2.title}</th>
+                <th class="w-1">{lang('notapplicable')}</th>
+                {if $cat2.type neq "RATE"}
+                <th class="w-1">{lang('available')}</th>
+                <th class="w-1">{lang('notavailable')}</th>
+                {else}
+                <th class="w-1">30</th>
+                <th class="w-1">50</th>
+                <th class="w-1">70</th>
+                <th class="w-1">80</th>
+                <th class="w-1">100</th>
+                {/if}
+                <th class="w-1 no-print">
+                    &nbsp;
+                </th>
+            </thead>
+            <tbody>
+                {$newi = 0}
+                {list="$cat2.options" name="subcat"}
+                {$newi = $newi+1}
+                <tr>
+                    <td>{$keycat}.{$newi}</td>
+                    <td>{$subcat.title}</td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="-1" {if $subcat.result eq -1}checked{/if}></td>
+                    {if $cat2.type neq "RATE"}
+                    <td><input type="radio" class="ratebox" disabled value="1" {if $subcat.result eq 1}checked{/if}></td>
+                    <td><input type="radio" class="ratebox" disabled value="0" {if $subcat.result eq 0}checked{/if}></td>
+                    {else}
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="30" {if $subcat.result eq 30}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="50" {if $subcat.result eq 50}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="70" {if $subcat.result eq 70}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="80" {if $subcat.result eq 80}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="100" {if $subcat.result eq 100}checked{/if}></td>
+                    {/if}
+                    <td class="no-print">
+                        <div class="options">
+                            {if $subcat.image}
+                            <a target="_blank" href="{$subcat.image}" class="feather-image"></a>
+                            {else}
+                            <i class="feather-minus"></i>
+                            {/if}
+                        </div>
+                    </td>
+                </tr>
+                {/list}
+            </tbody>
+        </table>
+        {/list}
+        {else}
+        {if $cat.tab_id neq $keytab}{continue}{/if}
+        <table class="table">
+            <thead>
+                <th class="w-1">{lang('points')}</th>
+                <th>{$cat.title}</th>
+                <th class="w-1">{lang('notapplicable')}</th>
+                {if $cat.type neq "RATE"}
+                <th class="w-1">{lang('available')}</th>
+                <th class="w-1">{lang('notavailable')}</th>
+                {else}
+                <th class="w-1">30</th>
+                <th class="w-1">50</th>
+                <th class="w-1">70</th>
+                <th class="w-1">80</th>
+                <th class="w-1">100</th>
+                {/if}
+                <th class="w-1 no-print">
+                    &nbsp;
+                </th>
+            </thead>
+            <tbody>
+                {$newi = 0}
+                {list="$cat.options" name="subcat"}
+                {$newi = $newi+1}
+                <tr>
+                    <td>{$keycat}.{$newi}</td>
+                    <td>{$subcat.title}</td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="-1" {if $subcat.result eq -1}checked{/if}></td>
+                    {if $cat.type neq "RATE"}
+                    <td><input type="radio" class="ratebox" disabled value="1" {if $subcat.result eq 1}checked{/if}></td>
+                    <td><input type="radio" class="ratebox" disabled value="0" {if $subcat.result eq 0}checked{/if}></td>
+                    {else}
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="30" {if $subcat.result eq 30}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="50" {if $subcat.result eq 50}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="70" {if $subcat.result eq 70}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="80" {if $subcat.result eq 80}checked{/if}></td>
+                    <td><input type="radio" data-cat="{$keycat}" disabled class="ratebox" value="100" {if $subcat.result eq 100}checked{/if}></td>
+                    {/if}
+                    <td class="no-print">
+                        <div class="options">
+                            {if $subcat.image}
+                            <a target="_blank" href="{$subcat.image}" class="feather-image"></a>
+                            {else}
+                            <i class="feather-minus"></i>
+                            {/if}
+                        </div>
+                    </td>
+                </tr>
+                {/list}
+            </tbody>
+        </table>
+        {/if}
+        {/list}
+        <!-- ملخص الأداء -->
+        <table class="table text-center">
+            <thead>
+                <tr>
+                    <th colspan="4">{lang('performance')}</th>
+                </tr>
+                <tr>
+                    <th>{lang('points')}</th>
+                    <th>{lang('percentage')}</th>
+                    <th>{lang('points')}</th>
+                    <th class="w-30">{lang('items')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {list="$report.options" name="cat"}
+                {if $cat.tab_id neq $keytab}{continue}{/if}
+                {if $cat.type neq 'RATE'}{continue}{/if}
+                <tr>
+                    <td>{$cat.result.points}</td>
+                    <td>{$cat.result.percent}%</td>
+                    <td>&nbsp;</td>
+                    <td>{$cat.title}</td>
+                </tr>
+                {/list}
+            </tbody>
+        </table>
+    </div>
+    {/list}
+</div>
+<!-- //END -->
+
+<script>
+    document.title += '_' + "{$report.hotel}" + '_' + "{$report.created_at}"
+</script>
+{display="footer"}

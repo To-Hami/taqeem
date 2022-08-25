@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <base href="{SUB_DIR}/">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/feather.css">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <link rel="stylesheet" href="assets/css/style.css?d={time()}">
+  <script src="assets/js/js.js"></script>
+  <title>{lang('taqeem')}</title>
+</head>
+
+<body>
+  <!-- BODY -->
+  <div id="container" class="container">
+
+    <header>
+      <span></span>
+      <img src="/assets/img/logo.png" alt="">
+      <span></span>
+    </header>
+    
+    {if (get_message())}
+    <div class="alert alert-info col-sm-4 m-auto">{get_message()}</div>
+    {/if}
+    {if (is_error())}
+    <ul>
+      {list="get_errors()" name="err"}
+      <li class="alert alert-danger col-sm-4 m-auto">{lang($keyerr)} {$err}</li>
+      {/list}
+    </ul>
+    {/if}
+    <br>

@@ -1,0 +1,5 @@
+
+Options -Indexes
+RewriteEngine On
+
+RewriteRule ^([\s\S]*)$ public/$1 [L,NC]

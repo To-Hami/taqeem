@@ -1,0 +1,40 @@
+{display="header"}
+
+<h4># {lang('reports')}</h4>
+<br>
+<table class="table text-right">
+    <thead>
+        <th class="w-1">#</th>
+        <th class="w-10">{lang('test_date')}</th>
+        <th>{lang('supervisor')}</th>
+        <th>{lang('hotelname')}</th>
+        <th>{lang('branch')}</th>
+        <th class="w-1">&nbsp;</th>
+    </thead>
+    <tbody>
+        {list="$reports" name="report"}
+        <tr>
+            <td>{$ireport}</td>
+            <td>{$report.created_at}</td>
+            <td>{$report.username}</td>
+            <td>{$report.hotel}</td>
+            <td>{$report.branch}</td>
+            <td>
+                <div class="options">
+                    <a href="/reports/{$report.id}/">
+                        <span class="feather-eye"></span>
+                    </a>
+                    <span><i onclick="javascript:alertdel('/reports/{$report.id}/del', this)" class="feather-trash text-danger"></i></span>
+                </div>
+            </td>
+        </tr>
+        {listelse}
+        <tr>
+            <td colspan="6" class="caption">{lang('noresult')}</td>
+        </tr>
+        {/listelse}
+
+    </tbody>
+</table>
+
+{display="footer"}

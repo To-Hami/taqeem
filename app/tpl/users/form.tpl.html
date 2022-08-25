@@ -1,0 +1,77 @@
+{display="header"}
+
+
+<form method="post" class="col-sm-6" id="loginform">
+    <input type="hidden" name="user_type" value="{param('show')}">
+    <div class="text-center">
+        <h5>
+        {if $user.id}
+            {if param('show') eq \app\constants\User::T_MANAGMENT}
+                {lang('edit_managment')}
+            {elseif param('show') eq \app\constants\User::T_GENERAL_MANAGERS}
+                {lang('edit_general_manager')}
+            {elseif param('show') eq \app\constants\User::T_MANAGERS}
+                {lang('edit_manager')}
+            {else}
+                {lang('edit_user')}
+            {/if}
+        {else}
+            {if param('show') eq \app\constants\User::T_MANAGMENT}
+                {lang('new_managment')}
+            {elseif param('show') eq \app\constants\User::T_GENERAL_MANAGERS}
+                {lang('new_general_manager')}
+            {elseif param('show') eq \app\constants\User::T_MANAGERS}
+                {lang('new_manager')}
+            {else}
+                {lang('new_user')}
+            {/if}
+        {/if}
+        </h5>
+    </div>
+    
+    <br>
+
+    <div class="form-group">
+        <label for="username">{lang('username')}</label>
+        <input required type="text" name="name" id="username" class="form-control" value="{$user.name}">
+    </div>
+    <div class="form-group">
+        <label for="email">{lang('email')}</label>
+        <input required type="email" name="email" id="email" class="form-control" value="{$user.email}">
+    </div>
+
+    {if in_array(param('show'), [\app\constants\User::T_GENERAL_MANAGERS, \app\constants\User::T_MANAGERS])}
+    <div class="form-group">
+        <label for="hotel">{lang('hotel')}</label>
+        <select name="hotel_id" id="hotel" class="form-select">
+            <option value="0">{lang('choose_hotel')}...</option>
+            {list="$hotels" name="hotel"}
+            <option {if $user.hotel_id eq $hotel.id}selected{/if} value="{$hotel.id}">{$hotel.name}</option>
+            {/list}
+        </select>
+    </div>
+    {/if}
+
+    {if $user.id}
+    <br>
+    <input type="hidden" name="id" value="{$user.id}">
+    <input type="hidden" name="_method" value="put">
+    <div class="alert alert-info text-sm">
+        <i class="feather-info"> &nbsp;</i>
+        {lang('info.edit_for_password')}
+    </div>
+    {/if}
+    
+    <div class="form-group">
+        <label for="password">{lang('password')}</label>
+        <input type="password" name="password" id="password" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="vpassword">{lang('vpassword')}</label>
+        <input type="password" name="vpassword" id="vpassword" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">{lang('save_changes')}</button>
+</form>
+
+{display="footer"}

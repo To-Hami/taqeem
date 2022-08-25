@@ -1,0 +1,70 @@
+{display="header"}
+
+<div class="d-flex justify-content-between">
+    <h4># 
+        {if param('show') eq \app\constants\User::T_MANAGMENT}
+            {lang('managment')}
+        {elseif param('show') eq \app\constants\User::T_GENERAL_MANAGERS}
+            {lang('general_managers')}
+        {elseif param('show') eq \app\constants\User::T_MANAGERS}
+            {lang('managers')}
+        {else}
+            {lang('users')}
+        {/if}
+    </h4>
+    <div>
+        <a href="/user/add/{param('show')}" class="btn btn-primary">
+            <i class="feather-user-plus"></i>
+            {if param('show') eq \app\constants\User::T_MANAGMENT}
+                {lang('new_managment')}
+            {elseif param('show') eq \app\constants\User::T_GENERAL_MANAGERS}
+                {lang('new_general_manager')}
+            {elseif param('show') eq \app\constants\User::T_MANAGERS}
+                {lang('new_manager')}
+            {else}
+                {lang('new_user')}
+            {/if}
+        </a>
+    </div>
+</div>
+<br>
+<table class="table">
+    <thead>
+        <th class="w-1">#</th>
+        <th>{lang('username')}</th>
+        <th>{lang('email')}</th>
+        <th>{lang('register_date')}</th>
+        <th>{lang('last_login')}</th>
+        <th class="w-1">&nbsp;</th>
+    </thead>
+    <tbody>
+        {list="$users" name="user"}
+        <tr>
+            <td>{$iuser}</td>
+            <td {if $user.status eq 0}class="text-stroke"{/if}>{$user.name}</td>
+            <td {if $user.status eq 0}class="text-stroke"{/if}>{$user.email}</td>
+            <td>{$user.created_at}</td>
+            <td>{$user.login_at}</td>
+            <td>
+                <div class="options">
+                    <a title="{lang('edit_user')}" href="/user/edit/{$user.id}/{param('show')}">
+                        <span class="feather-edit"></span>
+                    </a>
+                    {if $user.status eq 0}
+                    <a href="/user/unlock/{$user.id}" title="{lang('activate_user')}"><span class="feather-unlock text-success"></span></a>
+                    {else}
+                    <span title="{lang('deactivate_user')}"><i onclick="javascript:alertdel('/user/lock/{$user.id}', this)" class="feather-lock text-danger"></i></span>
+                    {/if}
+                </div>
+            </td>
+        </tr>
+        {listelse}
+        <tr>
+            <td colspan="6" class="caption">{lang('noresult')}</td>
+        </tr>
+        {/listelse}
+
+    </tbody>
+</table>
+
+{display="footer"}

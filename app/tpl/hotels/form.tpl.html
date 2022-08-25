@@ -1,0 +1,37 @@
+{display="header"}
+
+
+<form method="post" class="col-sm-6" id="loginform">
+    <div class="text-center">
+        {if $hotel.id}
+        <h5>{lang('edit_hotel')}</h5>
+        <input type="hidden" name="id" value="{$hotel.id}">
+        <input type="hidden" name="_method" value="put">
+        {else}
+        <h5>{lang('new_hotel')}</h5>
+        {/if}
+    </div>
+    
+    <br>
+
+    <div class="form-group">
+        <label for="name">{lang('hotelname')}</label>
+        <input required type="text" name="name" id="name" class="form-control" value="{$hotel.name}">
+    </div>
+    <div class="form-group">
+        <label for="address">{lang('address')}</label>
+        <input required type="text" name="address" id="address" class="form-control" value="{$hotel.address}">
+    </div>
+    <div class="form-group">
+        <label for="email">{lang('email')}</label>
+        <input required type="email" name="email" id="email" class="form-control" value="{$hotel.email}">
+    </div>
+    <div class="form-group">
+        <label for="branch">{lang('branch')}</label>
+        <input required type="text" name="branch" id="branch" class="form-control" value="{$hotel.branch}">
+    </div>
+
+    <button type="submit" class="btn btn-primary">{lang('save_changes')}</button>
+</form>
+
+{display="footer"}

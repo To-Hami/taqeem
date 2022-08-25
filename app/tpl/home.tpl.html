@@ -1,0 +1,410 @@
+{display="header"}
+
+<header>
+    <h4>{lang('taqeem')}</h4>
+    <div><img src="/assets/img/logo.png" class="img-fluid" alt="logo"></div>
+</header>
+<form id="reportform" action="/reports" method="post">
+    <div class="text-left no-print">
+        <br>
+        <button type="submit" class="btn btn-primary">
+            <i class="feather-save"></i>
+            {lang('save_report')}
+        </button>
+    </div>
+    <br>
+    <!-- BEGIN -->
+    <!-- معلومات التقييم -->
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group row">
+                <input type="hidden" required name="hotel_id" id="hotel_id" value="0">
+                <label class="col-sm-4" for="hotelname">{lang('hotelname')}</label>
+                <div class="col-sm-8 relative">
+                    <input type="text" placeholder="{lang('search')}..." id="hotelname" class="form-control">
+                    <ul class="list" id="hotellist"></ul>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4" for="address">{lang('address')}</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly id="address" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4" for="branch">{lang('branch')}</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly id="branch" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group row">
+                <label class="col-sm-4" for="supervisor">{lang('supervisor')}</label>
+                <div class="col-sm-8">
+                    <input type="text" id="supervisor" class="form-control" readonly value="{auth('name')}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4" for="testdate">{lang('test_date')}</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly id="testdate" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <!-- تابات -->
+    <div class="tabs-container">
+        <p>
+            <div class="d-inline-block">
+                <select class="form-select" id="tabsselect">
+                    {list="json('tabs')" name="tab"}
+                    <option value="{$keytab}" {if $itab==1}selected{/if}>{$tab.title}</option>
+                    {/list}
+                </select>
+            </div>
+        </p>
+        <!-- محتوى التابات -->
+        {list="json('tabs')" name="tab"}
+        <div id="tab_{$itab}" class="tab {if $itab == 1}active{/if}">
+            {list="json('categories')" name="cat"}
+            {if $cat.tab_id neq $keytab}{continue}{/if}
+            {if $cat.is_room}
+            <table class="table text-center">
+                <thead>
+                    <th>{$cat.title}</th>
+                </thead>
+            </table>
+            <div id="rooms-container"></div>
+            <div id="button-container" class="text-center no-print">
+                <button id="addroom" type="button" class="btn btn-sm btn-primary">
+                    <i class="feather-plus"></i>
+                    {lang('add_room')}
+                </button>
+            </div>
+            <br>
+            <template id="room_table">
+            {/if}
+            <table class="table">
+                <thead>
+                    <th class="w-1">{lang('points')}</th>
+                    <th>
+                        {if $cat.is_room}
+                        {lang('room_number')}
+                        &nbsp;
+                        <div class="d-inline-block">
+                            <input required type="number" name="room[{$keycat}]" class="form-control form-control-sm text-bold text-center">
+                        </div>
+                        &nbsp;
+                        <button type="button" onclick="javascript:delRoom('id2del')" class="btn btn-sm btn-danger">
+                            <i class="feather-trash"></i>
+                            {lang('delete')}
+                        </button>
+                        {else}
+                            {$cat.title}
+                        {/if}
+                    </th>
+                    <th class="w-1">{lang('notapplicable')}</th>
+                    {if $cat.type neq "RATE"}
+                    <th class="w-1">{lang('available')}</th>
+                    <th class="w-1">{lang('notavailable')}</th>
+                    {else}
+                    <th class="w-1">30</th>
+                    <th class="w-1">50</th>
+                    <th class="w-1">70</th>
+                    <th class="w-1">80</th>
+                    <th class="w-1">100</th>
+                    {/if}
+                    <th class="w-1 no-print">
+                        &nbsp;
+                    </th>
+                </thead>
+                <tbody>
+                    {$newi = 0}
+                    {list="json('subcategories')" name="subcat"}
+                    {if $subcat.cat_id neq $keycat}{continue}{/if}
+                    {$newi = $newi+1}
+                    <tr>
+                        <td>{$subcat.cat_id}.{$newi}</td>
+                        <td>{$subcat.title}</td>
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="-1" checked></td>
+                        {if $cat.type neq "RATE"}
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="1"></td>
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="0"></td>
+                        {else}
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="30"></td>
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="50"></td>
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="70"></td>
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="80"></td>
+                        <td><input type="radio" data-cat="{$keycat}" name="options[{$keycat}][{$keysubcat}]" class="ratebox" value="100"></td>
+                        {/if}
+                        <td class="no-print">
+                            <div class="options">
+                                <input type="hidden" name="image[{$keycat}][{$keysubcat}]" class="" id="image_{$keycat}_{$keysubcat}" data-changeid="" value="">
+                                <div class="upload-hidden">
+                                    <label  id="upload_{$keycat}_{$keysubcat}" data-changeid="" class="feather-camera">
+                                        <input type="file" accept=".jpg,.gif,.png,.jpeg" onchange="javascript:uploadimage(this)" data-id="{$keycat}_{$keysubcat}" data-changeid="" class="d-hide">
+                                    </label>
+                                </div>
+                                <a href="#" target="_blank" id="link_{$keycat}_{$keysubcat}" data-changeid="" class="invisible feather-image"></a>
+                                <span><i data-title="{$subcat.title}" onclick="javascript:sendalert(this)" class="feather-alert-triangle text-danger"></i></span>
+                            </div>
+                        </td>
+                    </tr>
+                    {/list}
+                </tbody>
+            </table>
+            {if $cat.is_room}</template>{/if}
+            {/list}
+            <!-- ملخص الأداء -->
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th colspan="4">{lang('performance')}</th>
+                    </tr>
+                    <tr>
+                        <th>{lang('points')}</th>
+                        <th>{lang('percentage')}</th>
+                        <th>{lang('points')}</th>
+                        <th class="w-30">{lang('items')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {list="json('categories')" name="cat"}
+                    {if $cat.tab_id neq $keytab}{continue}{/if}
+                    {if $keycat eq 9}{continue}{/if}
+                    {if $cat.type neq 'RATE'}{continue}{/if}
+                    <tr>
+                        <td id="points_{$keycat}">0</td>
+                        <td id="percent_{$keycat}">0%</td>
+                        <td>&nbsp;</td>
+                        <td>{$cat.title}</td>
+                    </tr>
+                    {/list}
+                </tbody>
+            </table>
+        </div>
+        {/list}
+    </div>
+    <!-- //END -->
+</form>
+
+<script>
+
+    // rating
+    function updateRating(e) {
+        var rating = {}
+        var total  = {}
+        var rater = document.querySelectorAll('[name*="options"]:checked')
+        rater.forEach(function (el, i) {
+            var cat = el.getAttribute('data-cat')
+            var val = parseInt(el.value)
+            if(rating[cat] == undefined) {
+                rating[cat] = 0
+                total[cat] = 0
+            }
+            val = val > 0 ? val : 0
+            rating[cat] += val
+            total[cat] += 100
+        })
+        for (var catid in rating) {
+            var rate = rating[catid];
+            var perc = total[catid];
+            var viewpoints  = document.getElementById("points_" + catid)
+            var viewpercent = document.getElementById("percent_" + catid)
+            console.log(viewpoints, viewpercent);
+            if(viewpoints) viewpoints.innerText = rate
+            if(viewpercent) viewpercent.innerText = Math.floor((rate/perc) * 100) + "%"
+        }
+    }
+    var rater = document.querySelectorAll('[name*="options"]')
+    rater.forEach(function(el){
+        el.addEventListener('change', updateRating)
+    })
+    
+    var hotelList  = document.getElementById('hotellist')
+    var searchList = []
+    function updatehotellist(list) {
+        hotelList.classList.add('show')
+        var res = []
+        list.forEach(function (el,i) {
+            res.push('<li onclick="javascript:chooseHotel(' + i + ')"><div>'
+                + el.name
+                + '</div><div class="caption mt-1 text-sm listcaption">'
+                + '<span><i class="feather-map"></i>&nbsp;'
+                + el.address
+                + '</span><span><i class="feather-map-pin"></i>&nbsp;'
+                + el.branch
+                +'</span></div></li>')
+        })
+        hotelList.innerHTML = res.length ? res.join('') : '<li class="caption">{lang('noresult')}</li>'
+    }
+    
+    // search by hotel
+    var testDate   = document.getElementById('testdate')
+    var hotelInput = document.getElementById('hotelname')
+    var hotelAddr  = document.getElementById('address')
+    var hotelBranch= document.getElementById('branch')
+    var hotelId    = document.getElementById('hotel_id')
+
+    var today = (new Date())
+    var MM    = today.getMonth() + 1
+    if(MM < 10) MM = '0' + MM
+    var DD    = today.getDate() < 10 ? '0' + today.getDate() : today.getDate()
+    testDate.value = today.getFullYear() + '-' + MM + '-' + DD
+    
+    function chooseHotel(indx) {
+        hotelList.classList.add('show')
+        var el = searchList[indx]
+        hotelId.value   = el.id
+        hotelInput.value= el.name
+        hotelAddr.value = el.address
+        hotelBranch.value= el.branch
+        hotelAddr.setAttribute('readonly', true)
+        hotelBranch.setAttribute('readonly', true)
+    }
+    function clear() {
+        hotelId.value   = 0
+        hotelAddr.value = ''
+        hotelBranch.value = ''
+        hotelAddr.removeAttribute('readonly')
+        hotelBranch.removeAttribute('readonly')
+    }
+
+    var searchId = 0
+    hotelInput.addEventListener('keyup', async function(e){
+        if(e.currentTarget.value.length < 2) return hotelList.classList.remove('show')
+        hotelList.classList.add('show')
+        hotelList.innerHTML = '<li class="caption"><i class="feather-loader spining"></i>&nbsp;جار البحث...</li>'
+        clear()
+        searchId++
+        var thisId = searchId
+        fetch('/hotels?name=' + e.currentTarget.value, {
+            headers: {
+                'X-Requested-With': 1
+            }
+        }).then(function(res){
+            if(thisId != searchId) return false
+            return res.json()
+        }).then(function(res){
+            if(!res) return
+            searchList = res.data.hotels
+            updatehotellist(searchList)
+        }).catch(function(err){
+            updatehotellist([])
+        })
+    })
+
+    document.addEventListener('click', function(e) {
+        hotelList.classList.remove('show')
+    })
+
+    function uploadimage(el)
+    {
+        var idvalue = el.getAttribute('data-id')
+        var image_  = document.getElementById('image_' + idvalue)
+        var link_   = document.getElementById('link_' + idvalue)
+        var upload_ = document.getElementById('upload_' + idvalue)
+        // loading
+        upload_.classList.remove('feather-camera')
+        upload_.classList.add('feather-loader')
+        upload_.classList.add('spining')
+
+        var dat2Post = new FormData();
+        dat2Post.append('image', el.files[0])
+        fetch('/reports/img', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 1
+            },
+            body: dat2Post
+        }).then(function (res) {
+            return res.json()
+        }).then(function (res) {
+            if(res.data.url) {
+                if(image_) image_.value = res.data.url
+                if(upload_) {
+                    link_.setAttribute('href', res.data.url)
+                    link_.classList.remove('invisible')
+                }
+            }
+            upload_.classList.add('feather-camera')
+            upload_.classList.remove('feather-loader')
+            upload_.classList.remove('spining')
+        }).catch(() => {
+             link_.classList.add('invisible')
+        })
+
+        el.value = null
+    }
+
+    function sendalert(el) {
+        if(hotelId.value  < 1) return alert("{lang('err.please_choosehotel')}")
+        // loading
+        el.classList.remove('feather-alert-triangle')
+        el.classList.add('feather-loader')
+        el.classList.add('spining')
+
+        fetch('/reports/alert', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 1
+            },
+            body: JSON.stringify({
+                message: el.getAttribute('data-title'),
+                hotel_id: hotelId.value
+            })
+        }).then(function (res) {
+            return res.json()
+        }).then(function (res) {
+            if (res.data) {
+                alert(res.message)
+            }
+            el.classList.add('feather-alert-triangle')
+            el.classList.remove('feather-loader')
+            el.classList.remove('spining')
+        }).catch(() => {
+        })
+    }
+
+    function roomscount() {
+        var container = document.getElementById('rooms-container')
+        return container.children.length || 0
+    }
+
+    var roomID = 1
+    document.getElementById('addroom').addEventListener('click', function(e) {
+        var container = document.getElementById('rooms-container')
+        var temp = document.getElementById('room_table').innerHTML
+
+        if(container.children.length >= 10) return alert("{lang('err.room_count_exceeded')}")
+
+        // reforming
+        temp = temp.replaceAll(']" class="', '][' + roomID + ']" class="')
+        temp = temp.replaceAll('" data-changeid=""', '_' + roomID + '"')
+        temp = temp.replaceAll('id2del', 'roomid_' + roomID)
+
+        var newEl = document.createElement('div')
+        newEl.innerHTML = temp
+        newEl.id = 'roomid_' + roomID
+
+        container.append(newEl)
+        roomID++
+    })
+
+    function delRoom(roomid) {
+        var e = document.getElementById(roomid)
+        if(e) e.remove()
+    }
+
+    window.addEventListener("beforeunload", function (e) {
+        if(roomscount() > 0 || hotelId.value > 0) {
+            e.preventDefault();
+            e.returnValue = ''
+        }
+    })
+</script>
+
+{display="footer"}
